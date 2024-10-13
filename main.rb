@@ -74,16 +74,43 @@ def runner(answer)
   print("Score is #{score}/#{valid_points} - #{percentage.round(2)}")
 end
 
-sample = {
-  "enjoys_job": "yes",
-  "respected_by_managers": "no",
-  "good_for_carers": "yes",
-  "contracted_hours": 20,
-  "hours_actually_worked": 34,
-  "unpaid_extra_work": "unsure",
-  "age": 26,
-  "hourly_rate": "£8.22",
-  "submitted_date": 1608211454000
-}
+# sample = {
+#   "enjoys_job": "yes",
+#   "respected_by_managers": "no",
+#   "good_for_carers": "yes",
+#   "contracted_hours": 20,
+#   "hours_actually_worked": 34,
+#   "unpaid_extra_work": "unsure",
+#   "age": 26,
+#   "hourly_rate": "£8.22",
+#   "submitted_date": 1608211454000
+# }
 
-runner(sample) # outputs "Score is 3/5 - 60.0%"
+# runner(sample) # outputs "Score is 3/5 - 60.0%"
+
+
+# Main execution block
+if __FILE__ == $0
+  if ARGV.empty?
+    puts "This implementation requires a JSON file path as an argument"
+    puts "Usage: ruby #{__FILE__} path/to/file.json"
+    exit 1
+  end
+
+  filename = ARGV[0]
+
+  unless File.exist?(filename)
+    puts "File '#{filename}' does not exist."
+    exit 1
+  end
+
+  begin
+    file_content = File.read(filename)
+    answer_data = JSON.parse(file_content, symbolize_names: true)
+  rescue JSON::ParserError => e
+    puts "Failed to parse JSON file: #{e.message}"
+    exit 1
+  end
+
+  runner(answer_data)
+end
